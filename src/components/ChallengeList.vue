@@ -5,6 +5,20 @@
         <v-btn depressed @click.stop="newItem()" color="primary">
           <v-icon>pencil</v-icon>
         </v-btn>
+        Up Vote
+        <v-btn @click="sortDirection('ASC')">
+          <v-icon>⬇️</v-icon>
+        </v-btn>
+        <v-btn @click="sortDirection('DESC')">
+          <v-icon>⬆️</v-icon>
+        </v-btn>
+        Date
+        <v-btn @click="sortDateDirection('ASC')">
+          <v-icon>⬇️</v-icon>
+        </v-btn>
+        <v-btn @click="sortDateDirection('DESC')">
+          <v-icon>⬆️</v-icon>
+        </v-btn>
       </v-row>
     </v-col>
     <v-col>
@@ -18,6 +32,13 @@
                   <v-list-item-subtitle
                     v-text="item.content"
                   ></v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    <v-chip-group active-class="primary--text" column>
+                      <v-chip v-for="tag in getTagName(item.tagIds)" :key="tag">
+                        {{ tag }}
+                      </v-chip>
+                    </v-chip-group></v-list-item-subtitle
+                  >
                 </v-list-item-content>
 
                 <v-list-item-action>
@@ -58,6 +79,9 @@ export default {
   },
   data() {
     return {
+      filterTag: [],
+      sortBy: "",
+      sortDate: "",
       openEditDialog: {
         show: false,
         payload: {},
@@ -68,12 +92,29 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ allItems: "ItemStore/getItems" }),
+    ...mapGetters({
+      allItems: "ItemStore/getItems",
+      tags: "ItemStore/getTags",
+    }),
     items() {
       return this.allItems;
     },
   },
   methods: {
+    getTagName(ids) {
+      console.log(
+        "🚀 ~ file: ChallengeList.vue ~ line 81 ~ getTagName ~ id",
+        ids
+      );
+      let selectedTag = this.tags.filter((item) => {
+        // item.id == ids;
+        return ids.includes(item.id);
+      });
+      console.log(selectedTag);
+      return selectedTag.map((t) => {
+        return t.tagName;
+      });
+    },
     editItem(item, index) {
       this.openEditDialog.show = true;
       this.openEditDialog.payload = item;
@@ -82,11 +123,16 @@ export default {
     closeItem() {
       this.openEditDialog.show = false;
     },
-    updateItem(content) {
+    updateItem(payload) {
+      console.log(
+        "🚀 ~ file: ChallengeList.vue ~ line 120 ~ updateItem ~ payload",
+        payload
+      );
       this.openEditDialog.show = false;
       this.$store.dispatch("ItemStore/updateItemStore", {
         index: this.openEditDialog.itemIndex,
-        content,
+        content: payload.content,
+        tags: payload.tags,
       });
     },
     upVote(id) {
@@ -99,16 +145,26 @@ export default {
       this.openEditDialog.show = true;
       this.openEditDialog.payload = {};
     },
-    saveItem({ title, content }) {
+    saveItem({ title, content, tagIds }) {
       let newContent = {
         id: Math.random() * 1000,
+        tagIds,
         title,
         content,
         upVote: 0,
         downVote: 0,
+        createdDate: new Date(),
       };
       this.openEditDialog.show = false;
       this.$store.dispatch("ItemStore/newItemStore", { newContent });
+    },
+    sortDirection(payload) {
+      this.sortBy = payload;
+      this.$store.dispatch("ItemStore/sortBy", this.sortBy);
+    },
+    sortDateDirection(payload) {
+      this.sortDate = payload;
+      this.$store.dispatch("ItemStore/sortDate", this.sortDate);
     },
   },
 };

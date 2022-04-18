@@ -20,11 +20,22 @@
         outlined
         :readonly="payload.id ? true : false"
       />
+      <v-select
+        v-model="tagValue"
+        :items="getTags"
+        attach
+        chips
+        label="Chips"
+        item-text="tagName"
+        item-value="id"
+        multiple
+      ></v-select>
       <v-textarea outlined name="input-7-4" v-model="content" />
     </v-card>
   </v-dialog>
 </template>
 <script>
+import { mapGetters } from "vuex";
 export default {
   props: {
     show: {
@@ -53,11 +64,20 @@ export default {
       //   show: true,
       content: "",
       title: "",
+      tagValue: [],
+      tagItems: [],
     };
   },
   mounted() {
     this.content = this.payload.content;
     this.title = this.payload.title;
+    this.tagValue = this.payload.tagIds;
+  },
+  computed: {
+    ...mapGetters({ tags: "ItemStore/getTags" }),
+    getTags() {
+      return this.tags;
+    },
   },
   methods: {
     closeDialog() {
@@ -65,9 +85,13 @@ export default {
     },
     saveData() {
       if (this.payload.id) {
-        this.updateAction(this.content);
+        this.updateAction({ content: this.content, tags: this.tagValue });
       } else {
-        this.saveAction({ title: this.title, content: this.content });
+        this.saveAction({
+          title: this.title,
+          content: this.content,
+          tagIds: this.tagValue,
+        });
       }
     },
   },
