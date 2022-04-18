@@ -5,27 +5,36 @@ const state = {
       title: "Ali Connors",
       content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
       tagIds: [1, 2],
-      upVote: 3,
-      downVote: 0,
+      upVote: ["2"],
+      downVote: [],
+      upVoted: true,
+      downVoted: false,
       createdDate: new Date("12-April-2022"),
+      createdBy: "ABC",
     },
     {
       id: 2,
       title: "Trevor Hansen",
       content: `Have any ideas about what we should get Heidi for her birthday?`,
       tagIds: [2],
-      upVote: 1,
-      downVote: 0,
+      upVote: ["1"],
+      upVoted: false,
+      downVoted: false,
+      downVote: [],
       createdDate: new Date("12-April-2022"),
+      createdBy: "XYZ",
     },
     {
       id: 3,
       title: "Recipe to try",
       content: `We should eat this: Grate, Squash, Corn, and tomatillo Tacos."`,
       tagIds: [1],
-      upVote: 0,
-      downVote: 0,
+      upVote: [],
+      downVote: ["1"],
+      upVoted: false,
+      downVoted: true,
       createdDate: new Date("15-April-2022"),
+      createdBy: "ALOK",
     },
   ],
   tags: [
@@ -89,10 +98,22 @@ const mutations = {
   },
 
   upVote(state, payload) {
-    state.items[payload.index].upVote += 1;
+    if (
+      !state.items[payload.index].upVote.includes(payload.empId) &&
+      !state.items[payload.index].downVote.includes(payload.empId)
+    ) {
+      state.items[payload.index].upVote.push(payload.empId);
+      state.items[payload.index].upVoted = true;
+    }
   },
   downVote(state, payload) {
-    state.items[payload.index].downVote += 1;
+    if (
+      !state.items[payload.index].downVote.includes(payload.empId) &&
+      !state.items[payload.index].upVote.includes(payload.empId)
+    ) {
+      state.items[payload.index].downVote.push(payload.empId);
+      state.items[payload.index].downVoted = true;
+    }
   },
   newItem(state, payload) {
     state.items.push(payload.newContent);

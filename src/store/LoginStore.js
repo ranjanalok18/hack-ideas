@@ -1,8 +1,8 @@
 const state = {
   isLogin: false,
-  employeeId: null,
+  employeeId: "",
 };
-
+const getters = {};
 const actions = {
   loginEmployee({ commit }, { employeeId }) {
     commit("loginSuccess", { employeeId });
@@ -19,7 +19,7 @@ const actions = {
 const mutations = {
   loginSuccess(state, employeeId) {
     state.isLogin = true;
-    state.employeeId = employeeId;
+    localStorage.setItem("employeeId", employeeId.employeeId);
   },
   loginFailure(state) {
     state.isLogin = false;
@@ -29,6 +29,7 @@ const mutations = {
 const loginStore = {
   namespaced: true,
   state,
+  getters,
   actions,
   mutations,
 };

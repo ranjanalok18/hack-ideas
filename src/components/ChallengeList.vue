@@ -3,21 +3,38 @@
     <v-col>
       <v-row>
         <v-btn depressed @click.stop="newItem()" color="primary">
-          <v-icon>pencil</v-icon>
+          <v-icon>mdi-pencil</v-icon>
         </v-btn>
+
         Up Vote
-        <v-btn @click="sortDirection('ASC')">
-          <v-icon>⬇️</v-icon>
+        <v-btn
+          icon
+          @click="sortDirection('ASC')"
+          :color="sortBy == 'ASC' ? 'green' : ''"
+        >
+          <v-icon>mdi-arrow-down-bold-outline</v-icon>
         </v-btn>
-        <v-btn @click="sortDirection('DESC')">
-          <v-icon>⬆️</v-icon>
+        <v-btn
+          icon
+          @click="sortDirection('DESC')"
+          :color="sortBy == 'DESC' ? 'green' : ''"
+        >
+          <v-icon>mdi-arrow-up-bold-outline</v-icon>
         </v-btn>
         Date
-        <v-btn @click="sortDateDirection('ASC')">
-          <v-icon>⬇️</v-icon>
+        <v-btn
+          icon
+          @click="sortDateDirection('ASC')"
+          :color="sortDate == 'ASC' ? 'green' : ''"
+        >
+          <v-icon>mdi-arrow-down-bold-outline</v-icon>
         </v-btn>
-        <v-btn @click="sortDateDirection('DESC')">
-          <v-icon>⬆️</v-icon>
+        <v-btn
+          icon
+          @click="sortDateDirection('DESC')"
+          :color="sortDate == 'DESC' ? 'green' : ''"
+        >
+          <v-icon>mdi-arrow-up-bold-outline</v-icon>
         </v-btn>
       </v-row>
     </v-col>
@@ -45,16 +62,20 @@
                   <v-list-item-action-text
                     v-text="item.action"
                   ></v-list-item-action-text>
-                  <v-btn @click="upVote(index)">
-                    <v-icon color="grey lighten-1">👍🏻 {{ item.upVote }}</v-icon>
+                  <v-btn icon @click="upVote(index)">
+                    <v-icon :color="item.upVoted ? 'green' : ''"
+                      >mdi-thumb-up-outline </v-icon
+                    >{{ item.upVote.length }}
                   </v-btn>
-                  <v-btn @click="downVote(index)">
-                    <v-icon color="grey lighten-1"
-                      >👎🏻 {{ item.downVote }}</v-icon
-                    >
+                  <v-btn icon @click="downVote(index)">
+                    <v-icon :color="item.downVoted ? 'green' : ''"
+                      >mdi-thumb-down-outline </v-icon
+                    >{{ item.downVote.length }}
                   </v-btn>
 
-                  <v-btn @click.stop="editItem(item, index)">Edit</v-btn>
+                  <v-btn @click.stop="editItem(item, index)"
+                    ><v-icon>mdi-pencil</v-icon></v-btn
+                  >
                 </v-list-item-action>
               </template>
             </v-list-item>
@@ -102,15 +123,10 @@ export default {
   },
   methods: {
     getTagName(ids) {
-      console.log(
-        "🚀 ~ file: ChallengeList.vue ~ line 81 ~ getTagName ~ id",
-        ids
-      );
       let selectedTag = this.tags.filter((item) => {
         // item.id == ids;
         return ids.includes(item.id);
       });
-      console.log(selectedTag);
       return selectedTag.map((t) => {
         return t.tagName;
       });
@@ -124,10 +140,6 @@ export default {
       this.openEditDialog.show = false;
     },
     updateItem(payload) {
-      console.log(
-        "🚀 ~ file: ChallengeList.vue ~ line 120 ~ updateItem ~ payload",
-        payload
-      );
       this.openEditDialog.show = false;
       this.$store.dispatch("ItemStore/updateItemStore", {
         index: this.openEditDialog.itemIndex,
@@ -136,10 +148,16 @@ export default {
       });
     },
     upVote(id) {
-      this.$store.dispatch("ItemStore/upVoteStore", { index: id });
+      this.$store.dispatch("ItemStore/upVoteStore", {
+        index: id,
+        empId: localStorage.getItem("employeeId"),
+      });
     },
     downVote(id) {
-      this.$store.dispatch("ItemStore/downVoteStore", { index: id });
+      this.$store.dispatch("ItemStore/downVoteStore", {
+        index: id,
+        empId: localStorage.getItem("employeeId"),
+      });
     },
     newItem() {
       this.openEditDialog.show = true;
@@ -151,19 +169,24 @@ export default {
         tagIds,
         title,
         content,
-        upVote: 0,
-        downVote: 0,
+        upVote: [],
+        downVote: [],
         createdDate: new Date(),
+        empId: this.empId,
+        upVoted: false,
+        downVoted: false,
       };
       this.openEditDialog.show = false;
       this.$store.dispatch("ItemStore/newItemStore", { newContent });
     },
     sortDirection(payload) {
       this.sortBy = payload;
+      this.sortDate = "";
       this.$store.dispatch("ItemStore/sortBy", this.sortBy);
     },
     sortDateDirection(payload) {
       this.sortDate = payload;
+      this.sortBy = "";
       this.$store.dispatch("ItemStore/sortDate", this.sortDate);
     },
   },

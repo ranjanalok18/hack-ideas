@@ -6,7 +6,7 @@
           <v-toolbar-title>Sign In</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-form ref="form">
+          <v-form ref="form" @submit.prevent="loginSubmit">
             <v-text-field
               name="login"
               v-model="employeeId"
@@ -17,7 +17,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green" @click="loginSubmit">Login</v-btn>
+          <v-btn @click.prevent="loginSubmit" color="green">Login</v-btn>
         </v-card-actions>
       </v-card>
     </v-container>
