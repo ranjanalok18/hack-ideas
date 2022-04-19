@@ -5,6 +5,7 @@ const state = {
 const getters = {};
 const actions = {
   loginEmployee({ commit }, { employeeId }) {
+    // when there is a successfull login.
     commit("loginSuccess", { employeeId });
     return true;
   },
@@ -19,6 +20,7 @@ const actions = {
 const mutations = {
   loginSuccess(state, employeeId) {
     state.isLogin = true;
+    // Storing the Employee Id of user on LocalStorage
     localStorage.setItem("employeeId", employeeId.employeeId);
   },
   loginFailure(state) {

@@ -2,40 +2,44 @@
   <div>
     <v-col>
       <v-row>
-        <v-btn depressed @click.stop="newItem()" color="primary">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-
-        Up Vote
-        <v-btn
-          icon
-          @click="sortDirection('ASC')"
-          :color="sortBy == 'ASC' ? 'green' : ''"
+        <v-col cols="8">
+          <v-btn depressed @click.stop="newItem()" color="primary">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col cols="4" class="d-flex">
+          <v-spacer />
+          Up Vote
+          <v-btn
+            icon
+            @click="sortDirection('ASC')"
+            :color="sortBy == 'ASC' ? 'green' : ''"
+          >
+            <v-icon>mdi-arrow-down-bold-outline</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            @click="sortDirection('DESC')"
+            :color="sortBy == 'DESC' ? 'green' : ''"
+          >
+            <v-icon>mdi-arrow-up-bold-outline</v-icon>
+          </v-btn>
+          Date
+          <v-btn
+            icon
+            @click="sortDateDirection('ASC')"
+            :color="sortDate == 'ASC' ? 'green' : ''"
+          >
+            <v-icon>mdi-arrow-down-bold-outline</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            @click="sortDateDirection('DESC')"
+            :color="sortDate == 'DESC' ? 'green' : ''"
+          >
+            <v-icon>mdi-arrow-up-bold-outline</v-icon>
+          </v-btn></v-col
         >
-          <v-icon>mdi-arrow-down-bold-outline</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          @click="sortDirection('DESC')"
-          :color="sortBy == 'DESC' ? 'green' : ''"
-        >
-          <v-icon>mdi-arrow-up-bold-outline</v-icon>
-        </v-btn>
-        Date
-        <v-btn
-          icon
-          @click="sortDateDirection('ASC')"
-          :color="sortDate == 'ASC' ? 'green' : ''"
-        >
-          <v-icon>mdi-arrow-down-bold-outline</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          @click="sortDateDirection('DESC')"
-          :color="sortDate == 'DESC' ? 'green' : ''"
-        >
-          <v-icon>mdi-arrow-up-bold-outline</v-icon>
-        </v-btn>
       </v-row>
     </v-col>
     <v-col>
@@ -131,6 +135,7 @@ export default {
         return t.tagName;
       });
     },
+    // To Show the edit Dialog
     editItem(item, index) {
       this.openEditDialog.show = true;
       this.openEditDialog.payload = item;
@@ -139,6 +144,7 @@ export default {
     closeItem() {
       this.openEditDialog.show = false;
     },
+    // User Update of the item
     updateItem(payload) {
       this.openEditDialog.show = false;
       this.$store.dispatch("ItemStore/updateItemStore", {
@@ -147,12 +153,14 @@ export default {
         tags: payload.tags,
       });
     },
+    // Cast the Up Vote
     upVote(id) {
       this.$store.dispatch("ItemStore/upVoteStore", {
         index: id,
         empId: localStorage.getItem("employeeId"),
       });
     },
+    // Cast the Down Vote
     downVote(id) {
       this.$store.dispatch("ItemStore/downVoteStore", {
         index: id,
@@ -163,6 +171,7 @@ export default {
       this.openEditDialog.show = true;
       this.openEditDialog.payload = {};
     },
+    // To save the newly created item
     saveItem({ title, content, tagIds }) {
       let newContent = {
         id: Math.random() * 1000,
@@ -179,11 +188,13 @@ export default {
       this.openEditDialog.show = false;
       this.$store.dispatch("ItemStore/newItemStore", { newContent });
     },
+    // Sorting based on the Up Vote
     sortDirection(payload) {
       this.sortBy = payload;
       this.sortDate = "";
       this.$store.dispatch("ItemStore/sortBy", this.sortBy);
     },
+    // Sorting based on the Created Date
     sortDateDirection(payload) {
       this.sortDate = payload;
       this.sortBy = "";

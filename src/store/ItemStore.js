@@ -1,15 +1,16 @@
 const state = {
+  //Storing the static items in the store
   items: [
     {
-      id: 1,
-      title: "Ali Connors",
+      id: 1, // Default id for the hack idea
+      title: "Ali Connors", // Title for the idea
       content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-      tagIds: [1, 2],
-      upVote: ["2"],
-      downVote: [],
+      tagIds: [1, 2], // Tag selected for the idea
+      upVote: ["2"], // Up vote on the idea {{ Array of user }}
+      downVote: [], // Down vote on the idea {{ Array of user }}
       upVoted: true,
       downVoted: false,
-      createdDate: new Date("12-April-2022"),
+      createdDate: new Date("12-April-2022"), // Created Date
       createdBy: "ABC",
     },
     {
@@ -69,6 +70,7 @@ const actions = {
   newItemStore({ commit }, payload) {
     commit("newItem", payload);
   },
+  // Sorting Based on Up Vote
   sortBy({ commit }, payload) {
     console.log(commit);
     if (payload == "ASC") {
@@ -77,6 +79,7 @@ const actions = {
       state.items.sort((a, b) => b.upVote - a.upVote);
     }
   },
+  // Sorting Based on Created Date
   sortDate({ commit }, payload) {
     console.log(commit);
     if (payload == "ASC") {

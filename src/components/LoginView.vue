@@ -41,6 +41,10 @@ export default {
     }),
     loginSubmit() {
       const employeeId = this.employeeId;
+      /**
+       * Employee Id will the user input at the login
+       * If Employee Id is not empty will push the router to home.
+       */
       if (employeeId !== "") {
         this.loginEmployee({ employeeId }).then(() => {
           this.$router.push("/home");
